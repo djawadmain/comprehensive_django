@@ -2,7 +2,6 @@ from django.db.models.signals import post_save
 from .models import Post, Release
 from mongoengine import signals as mongo_signals
 from django.dispatch import receiver
-
 from django.utils.text import slugify
 
 
