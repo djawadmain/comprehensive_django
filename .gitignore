@@ -173,4 +173,5 @@ cython_debug/
 
 # End of https://www.toptal.com/developers/gitignore/api/django
 .idea
-**/__pycache__/
+main/__pycache__/
+hellopycharm/__pycache__/
