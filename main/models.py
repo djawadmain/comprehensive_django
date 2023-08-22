@@ -22,5 +22,7 @@ class Release(Document):
 
     @classmethod
     def pre_save(cls, sender, document, **kwargs):
+
+        # Set Slug For Release
         if not document.slug:
             document.slug = slugify(document.title)
