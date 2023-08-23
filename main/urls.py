@@ -3,6 +3,6 @@ from . import views
 
 
 urlpatterns = [
-    path('', views.HelloView.as_view()),
-    path('index/', views.IndexWebSocket.as_view())
+    path('index/', views.HelloView.as_view()),
+    path('', views.IndexWebSocket.as_view())
 ]

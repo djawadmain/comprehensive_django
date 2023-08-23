@@ -11,13 +11,12 @@
     <input id="chat-message-submit" type="button" value="Send">
     <script>
         let socket = new WebSocket(
-            'ws://' + window.location.host + '' +
+            'ws://' + window.location.host +
             '/ws/'
-        );
+        ,);
 
         socket.onmessage = function(e) {
-            let data = JSON.parse(e.data);
-            document.querySelector('#start-log').value += (data.message + '\n');
+            document.querySelector('#chat-log').value += (e.data+ '\n');
         };
 
         socket.onclose = function(e) {
@@ -34,9 +33,7 @@
         document.querySelector('#chat-message-submit').onclick = function(e) {
             const messageInputDom = document.querySelector('#chat-message-input');
             const message = messageInputDom.value;
-            socket.send(JSON.stringify({
-                'message': message
-            }));
+            socket.send(message);
             messageInputDom.value = '';
         };
     </script>

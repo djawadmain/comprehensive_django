@@ -9,4 +9,6 @@ class StartConsumers(WebsocketConsumer):
         pass
 
     def receive(self, text_data=None, bytes_data=None):
-        self.send(text_data=text_data)
+        self.send(text_data=text_data + '- sent by server')
+
+
