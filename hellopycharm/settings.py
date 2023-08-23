@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'main',
-    'django_mongoengine'
+    'django_mongoengine',
+    'channels'
 ]
 
 CACHES = {
@@ -85,7 +86,10 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'hellopycharm.wsgi.application'
+# WSGI_APPLICATION = 'hellopycharm.wsgi.application'
+
+# SET CHANNELS ASGI
+ASGI_APPLICATION = 'hellopycharm.routing.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases

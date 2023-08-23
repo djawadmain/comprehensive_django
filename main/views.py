@@ -3,6 +3,8 @@ from django.views import View
 from django.http import JsonResponse
 from .models import Post, Release, Comment
 from django.core.cache import cache
+
+
 # Create your views here.
 
 
@@ -28,3 +30,8 @@ class HelloView(View):
             cache.set('hello_view', 'hello', timeout=25)
 
         return JsonResponse(context)
+
+
+class IndexWebSocket(View):
+    def get(self, request):
+        return render(request, 'index.html')
