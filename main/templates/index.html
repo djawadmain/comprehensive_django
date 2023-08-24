@@ -6,36 +6,85 @@
     <title>Chat Room</title>
 </head>
 <body>
-    <textarea id="chat-log" cols="100" rows="20"></textarea><br>
-    <input id="chat-message-input" type="text" size="100"><br>
-    <input id="chat-message-submit" type="button" value="Send">
-    <script>
-        let socket = new WebSocket(
-            'ws://' + window.location.host +
-            '/ws/'
-        ,);
+<div style="display: flex; flex-direction: row; gap: 8px">
+    <canvas id="generate_canvas" width="200" height="200"></canvas>
+    <button type="button" id="send_canvas_data">send</button>
+    <button id="change_canvas_color">change canvas color</button>
+    <canvas id="message_canvas" width="200" height="200"></canvas>
+</div>
+<script>
+    const canvas_element = document.getElementById('generate_canvas');
 
-        socket.onmessage = function(e) {
-            document.querySelector('#chat-log').value += (e.data+ '\n');
-        };
+    const choice_random_array = (array) => {
+        let index = Math.floor(Math.random() * array.length);
 
-        socket.onclose = function(e) {
-            console.error('Chat socket closed unexpectedly');
-        };
+        return array[index];
+    }
 
-        document.querySelector('#chat-message-input').focus();
-        document.querySelector('#chat-message-input').onkeyup = function(e) {
-            if (e.key === 'Enter') {  // enter, return
-                document.querySelector('#chat-message-submit').click();
-            }
-        };
+    let set_canvas_gradient_color = () => {
+        const canvas_context = canvas_element.getContext('2d');
 
-        document.querySelector('#chat-message-submit').onclick = function(e) {
-            const messageInputDom = document.querySelector('#chat-message-input');
-            const message = messageInputDom.value;
-            socket.send(message);
-            messageInputDom.value = '';
-        };
-    </script>
+        const canvas_gradient = canvas_context.createLinearGradient(
+            0, 0, 200, 0
+        );
+
+        let color_for_choice = ['red', 'blue', 'green', 'orange', 'yellow', 'purple'];
+
+        canvas_gradient.addColorStop(0, choice_random_array(color_for_choice));
+        canvas_gradient.addColorStop(1, 'white');
+
+        canvas_context.fillStyle = canvas_gradient;
+        canvas_context.fillRect(
+            0, 0, 200, 200
+        );
+    }
+
+    let socket = new WebSocket(
+        'ws://' + window.location.host +
+        '/ws/'
+    );
+    socket.binaryType = 'arraybuffer';
+
+    socket.onmessage = function (e) {
+        let message = e.data;
+        let message_array = new Uint8Array(message);
+        let message_canvas_element = document.getElementById('message_canvas');
+        let message_canvas_context = message_canvas_element.getContext('2d');
+        let message_canvas_data = message_canvas_context.createImageData(
+            message_canvas_element.width, message_canvas_element.height
+        );
+
+        for (let i = 0; i < message_array.length; i++) {
+            let pixelIndex = i;
+            message_canvas_data.data[pixelIndex] = message_array[i];           // Red channel
+            message_canvas_data.data[pixelIndex + 1] = message_array[i];       // Green channel
+            message_canvas_data.data[pixelIndex + 2] = message_array[i];       // Blue channel
+            message_canvas_data.data[pixelIndex + 3] = 255;                     // Alpha channel (fully opaque)
+        }
+
+        // Set the entire canvas image data with the modified message_canvas_data
+        message_canvas_context.putImageData(message_canvas_data, 0, 0);
+    };
+
+    socket.onclose = function (e) {
+        console.error('Chat socket closed unexpectedly');
+    };
+
+    document.querySelector('#change_canvas_color').addEventListener('click', (e) => {
+        set_canvas_gradient_color();
+    })
+
+    document.querySelector('#send_canvas_data').addEventListener('click', (e) => {
+        let canvas_context = canvas_element.getContext('2d')
+        let canvas_data = canvas_context.getImageData(
+            0, 0, canvas_element.width, canvas_element.height
+        )
+        let generate_array = new Uint8Array(canvas_data.data)
+
+        socket.send(generate_array);
+    })
+
+    set_canvas_gradient_color()
+</script>
 </body>
 </html>
