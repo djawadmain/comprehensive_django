@@ -59,13 +59,13 @@ class ChatConsumers(AsyncWebsocketConsumer):
         }))
 
 
-class TestConsumer(AsyncJsonWebsocketConsumer):
-    async def connect(self):
-        await self.accept()
-
-    async def disconnect(self, code):
-        pass
-
-    async def receive_json(self, content, **kwargs):
-
-        await self.send_json(content=content)
+# class TestConsumer(AsyncJsonWebsocketConsumer):
+#     async def connect(self):
+#         await self.accept()
+#
+#     async def disconnect(self, code):
+#         pass
+#
+#     async def receive_json(self, content, **kwargs):
+#
+#         await self.send_json(content=content)
