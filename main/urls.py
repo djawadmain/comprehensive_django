@@ -4,5 +4,6 @@ from . import views
 
 urlpatterns = [
     path('index/', views.HelloView.as_view()),
-    path('', views.IndexWebSocket.as_view())
+    path('', views.IndexWebSocket.as_view()),
+    path('chat/<str:username>/', views.JoinChat.as_view())
 ]

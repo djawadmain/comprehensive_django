@@ -3,7 +3,8 @@ from django.views import View
 from django.http import JsonResponse
 from .models import Post, Release, Comment
 from django.core.cache import cache
-
+from django.utils.safestring import mark_safe
+import json
 
 # Create your views here.
 
@@ -35,3 +36,8 @@ class HelloView(View):
 class IndexWebSocket(View):
     def get(self, request):
         return render(request, 'index.html')
+
+
+class JoinChat(View):
+    def get(self, request, username):
+        return render(request, 'join_chat.html', {'username_json': mark_safe(json.dumps(username))})

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<span>
+    my username is
+    <p id="my_username"></p>
+</span>
+<div style="display: flex; flex-direction: column; gap: 8px">
+    <input id="username_input" type="text" placeholder="username ...">
+    <textarea id="text_data_message" cols="50" rows="10" placeholder="message ..."></textarea>
+    <button id="send_btn">Send</button>
+</div>
+<div style="display: flex; flex-direction: column; gap: 4px; margin-top: 8px; height: 320px; overflow-y: scroll; border: 2px solid gray; padding: 4px"
+     id="message_list">
+</div>
+<script>
+    let username = {{ username_json }};
+
+    document.querySelector('#my_username').innerText = username;
+
+    let socket = new WebSocket(
+        `ws://${window.location.host}/ws/chat/${username}/`
+    );
+
+    socket.onclose = (e) => {
+        console.error('the socket is closed');
+    }
+
+    let message_list_element = document.querySelector('#message_list')
+
+    socket.onmessage = (e) => {
+        let message = JSON.parse(e.data).message;
+
+        message_list_element.insertAdjacentHTML(
+            'beforeend',
+            `<div style="display: flex; flex-direction: column; gap: 8px">
+                <h6 style="margin: 0; font-size: 16px">${message.sender}</h6>
+                <span style="white-space: pre-line; font-size: 12px">${message.message}</span>
+            </div>`
+        );
+
+        message_list_element.scrollTop = message_list_element.scrollHeight;
+    }
+
+    document.querySelector('#send_btn').addEventListener('click', (e) => {
+        let message_input_element = document.querySelector('#text_data_message');
+
+        let context = {
+            'sender': username,
+            'receiver': document.querySelector('#username_input').value,
+            'message': message_input_element.value,
+        };
+
+        message_list_element.insertAdjacentHTML(
+            'beforeend',
+            `<div style="display: flex; flex-direction: column; gap: 8px; background-color: antiquewhite; padding: 10px; border-radius: 14px">
+                <h6 style="margin: 0; font-size: 16px">Me</h6>
+                <span style="white-space: pre-line; font-size: 12px">${context.message}</span>
+            </div>`
+        );
+
+        message_list_element.scrollTop = message_list_element.scrollHeight;
+
+        socket.send(JSON.stringify(context));
+
+        message_input_element.value = '';
+    });
+
+</script>
+</body>
+</html>
