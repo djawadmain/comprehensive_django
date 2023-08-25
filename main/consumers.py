@@ -1,5 +1,5 @@
 import json
-
+from channels.consumer import SyncConsumer, AsyncConsumer
 from channels.generic.websocket import WebsocketConsumer, AsyncWebsocketConsumer, AsyncJsonWebsocketConsumer
 
 from asgiref.sync import async_to_sync
@@ -57,7 +57,6 @@ class ChatConsumers(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({
             'message': message
         }))
-
 
 # class TestConsumer(AsyncJsonWebsocketConsumer):
 #     async def connect(self):
