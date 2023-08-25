@@ -23,7 +23,7 @@
     document.querySelector('#my_username').innerText = username;
 
     let socket = new WebSocket(
-        `ws://${window.location.host}/ws/chat/${username}/`
+        `ws://${window.location.host}/ws/chat_custom/${username}/`
     );
 
     socket.onclose = (e) => {
