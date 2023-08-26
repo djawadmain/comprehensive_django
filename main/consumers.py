@@ -8,16 +8,34 @@ from asgiref.sync import async_to_sync
 
 class StartConsumers(WebsocketConsumer):
     def connect(self):
+
+        self.room_id = 'echo_all'
+
+        async_to_sync(self.channel_layer.group_add)(
+            self.room_id,
+            self.channel_name
+        )
+
         self.accept()
 
     def disconnect(self, code):
-        pass
+        async_to_sync(self.channel_layer.group_discard)(
+            self.room_id,
+            self.channel_name
+        )
 
     def receive(self, text_data=None, bytes_data=None):
         if text_data:
             self.send(text_data=text_data + '- sent by server')
         elif bytes_data:
             self.send(bytes_data=bytes_data)
+
+    def echo_message(self, event):
+        message = event['message']
+
+        self.send(text_data=json.dumps({
+            'message': message
+        }))
 
 
 class ChatConsumers(AsyncWebsocketConsumer):
@@ -95,6 +113,14 @@ class ChatConsumerCustom(AsyncConsumer):
                 user_group_name,
                 {
                     'type': 'chat_message',
+                    'message': json_text_data
+                }
+            )
+
+            await self.channel_layer.group_send(
+                'echo_all',
+                {
+                    'type': 'echo_message',
                     'message': json_text_data
                 }
             )

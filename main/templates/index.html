@@ -47,6 +47,7 @@
 
     socket.onmessage = function (e) {
         let message = e.data;
+        console.log(e.data)
         let message_array = new Uint8Array(message);
         let message_canvas_element = document.getElementById('message_canvas');
         let message_canvas_context = message_canvas_element.getContext('2d');
@@ -83,8 +84,10 @@
 
         socket.send(generate_array);
     })
+    window.onload = () => {
+        set_canvas_gradient_color();
+    }
 
-    set_canvas_gradient_color()
 </script>
 </body>
 </html>
