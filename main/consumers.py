@@ -10,13 +10,18 @@ class StartConsumers(WebsocketConsumer):
     def connect(self):
 
         self.room_id = 'echo_all'
+        self.user = self.scope['user']
 
-        async_to_sync(self.channel_layer.group_add)(
-            self.room_id,
-            self.channel_name
-        )
+        if self.user.is_authenticated:  # is_superuser | is_staff
+            async_to_sync(self.channel_layer.group_add)(
+                self.room_id,
+                self.channel_name
+            )
 
-        self.accept()
+            self.accept()
+
+        else:
+            self.close()
 
     def disconnect(self, code):
         async_to_sync(self.channel_layer.group_discard)(
