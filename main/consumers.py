@@ -12,6 +12,13 @@ class StartConsumers(WebsocketConsumer):
         self.room_id = 'echo_all'
         self.user = self.scope['user']
 
+        username = self.user.username
+
+        self.scope['session']['test'] = 1
+        self.scope['session']['test2'] = username
+
+        self.scope['session'].save()
+
         if self.user.is_authenticated:  # is_superuser | is_staff
             async_to_sync(self.channel_layer.group_add)(
                 self.room_id,
