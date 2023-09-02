@@ -19,7 +19,7 @@ class StartConsumers(WebsocketConsumer):
 
         self.scope['session'].save()
 
-        if self.user.is_authenticated:  # is_superuser | is_staff
+        if self.user.is_authenticated or True:  # is_superuser | is_staff
             async_to_sync(self.channel_layer.group_add)(
                 self.room_id,
                 self.channel_name

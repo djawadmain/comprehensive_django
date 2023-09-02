@@ -1,12 +1,12 @@
-from django.shortcuts import render
-from django.views import View
-from django.http import JsonResponse
-from .models import Post, Release, Comment
-from django.core.cache import cache
-from django.utils.safestring import mark_safe
-from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
 import json
+
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
+from django.core.cache import cache
+from django.http import JsonResponse
+from django.shortcuts import render
+from django.utils.safestring import mark_safe
+from django.views import View
 
 
 # Create your views here.
